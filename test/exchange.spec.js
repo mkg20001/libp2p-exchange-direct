@@ -40,7 +40,7 @@ tests({
       if (err) {
         return cb(err)
       }
-      setTimeout(() => eA.swarm.dial(eB.swarm.peerInfo, cb), 250) // wait for circuit to find relay
+      setTimeout(() => eB.swarm.dial(eA.swarm.peerInfo, cb), 250) // wait for circuit to find relay
     })
   },
   Exchange: require('../src')
