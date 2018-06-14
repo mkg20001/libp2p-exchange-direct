@@ -58,7 +58,7 @@ class Exchange extends ExchangeBase {
   request (peerId, ns, data, cb) {
     let id = peerId.toB58String()
 
-    if (swarm.switch.muxedConns[id]) {
+    if (this.swarm.switch.muxedConns[id]) {
       this.swarm.dialProtocol(peerId, PROTOCOL, (err, conn) => {
         if (err) {
           return cb(err)
