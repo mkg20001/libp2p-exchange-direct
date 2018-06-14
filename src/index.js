@@ -86,6 +86,8 @@ class Exchange extends ExchangeBase {
           })
         )
       })
+    } else {
+      return cb(new Error('Not connected to peer!'))
     }
   }
 }

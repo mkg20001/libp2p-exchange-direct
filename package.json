@@ -4,7 +4,7 @@
   "description": "Data Exchange component that uses the swarm to directly dial the taget peer if it is connected",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "aegir test"
   },
   "keywords": [
     "data",
@@ -17,9 +17,13 @@
   "license": "MIT",
   "dependencies": {
     "debug": "^3.1.0",
-    "interface-data-exchange": "0.0.0"
+    "interface-data-exchange": "0.0.0",
+    "protons": "^1.0.1",
+    "pull-protocol-buffers": "^0.1.2",
+    "pull-stream": "^3.6.8"
   },
   "devDependencies": {
-    "aegir": "^14.0.0"
+    "aegir": "^14.0.0",
+    "interface-data-exchange-devdeps": "0.0.1"
   }
 }
