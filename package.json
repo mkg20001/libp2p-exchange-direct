@@ -36,5 +36,8 @@
   "bugs": {
     "url": "https://github.com/mkg20001/libp2p-exchange-direct/issues"
   },
-  "homepage": "https://github.com/mkg20001/libp2p-exchange-direct#readme"
+  "homepage": "https://github.com/mkg20001/libp2p-exchange-direct#readme",
+  "contributors": [
+    "Maciej Krüger <mkg20001@gmail.com>"
+  ]
 }
