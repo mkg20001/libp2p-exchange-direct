@@ -11,10 +11,6 @@ const ExchangeBase = require('interface-data-exchange')
 const PROTOCOL = '/p2p/exchange/direct/1.0.0'
 
 class Exchange extends ExchangeBase {
-  constructor (swarm) {
-    super(swarm)
-  }
-
   start (cb) {
     this.swarm.handle(PROTOCOL, (proto, conn) => {
       conn.getPeerInfo((err, pi) => {
