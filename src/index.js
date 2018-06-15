@@ -70,7 +70,7 @@ class Exchange extends ExchangeBase {
               err = new Error('Got no result back')
             }
 
-            if (res && res[0] && res.nack) {
+            if (res && res[0] && res[0].nack) {
               err = new Error('Other side refused to accept request')
             }
 
@@ -78,7 +78,7 @@ class Exchange extends ExchangeBase {
               return cb(err)
             }
 
-            return cb(null, res.result)
+            return cb(null, res[0].result)
           })
         )
       })
