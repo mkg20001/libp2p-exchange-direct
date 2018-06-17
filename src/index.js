@@ -54,11 +54,16 @@ class Exchange extends ExchangeBase {
   request (peerId, ns, data, cb) {
     let id = peerId.toB58String()
 
+    log('request on %s to %s', ns, id)
+
     if (this.swarm.switch.muxedConns[id]) {
+      log('request#%s dialing %s', ns, id)
       this.swarm.dialProtocol(peerId, PROTOCOL, (err, conn) => {
         if (err) {
           return cb(err)
         }
+
+        log('request#%s sending request to %s', ns, id)
 
         pull(
           pull.values([{ns, data}]),
@@ -66,6 +71,8 @@ class Exchange extends ExchangeBase {
           conn,
           ppb.decode(Response),
           pull.collect((err, res) => {
+            log('request#%s got response from %s', ns, id)
+
             if (!err && !res.length) {
               err = new Error('Got no result back')
             }
