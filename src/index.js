@@ -6,12 +6,17 @@ const {Request, Response} = require('./proto.js')
 
 const debug = require('debug')
 const log = debug('libp2p:exchange:direct')
+const prom = (fnc) => new Promise((resolve, reject) => fnc((err, res) => err ? reject(err) : resolve(res)))
 
 const ExchangeBase = require('interface-data-exchange')
 const PROTOCOL = '/p2p/exchange/direct/1.0.0'
 
 class Exchange extends ExchangeBase {
-  start (cb) {
+  constructor (swarm) {
+    super(swarm, 'exchange-direct')
+  }
+
+  async start () {
     this.swarm.handle(PROTOCOL, (proto, conn) => {
       conn.getPeerInfo((err, pi) => {
         if (err) {
@@ -41,30 +46,24 @@ class Exchange extends ExchangeBase {
         )
       })
     })
-
-    cb()
   }
 
-  stop (cb) {
+  async stop (cb) {
     this.swarm.unhandle(PROTOCOL)
-
-    cb()
   }
 
-  request (peerId, ns, data, cb) {
+  async request (peerId, ns, data) {
     let id = peerId.toB58String()
 
     log('request on %s to %s', ns, id)
 
     if (this.swarm.switch.muxedConns[id]) {
       log('request#%s dialing %s', ns, id)
-      this.swarm.dialProtocol(peerId, PROTOCOL, (err, conn) => {
-        if (err) {
-          return cb(err)
-        }
+      const conn = await prom(cb => this.swarm.dialProtocol(peerId, PROTOCOL, cb))
 
-        log('request#%s sending request to %s', ns, id)
+      log('request#%s sending request to %s', ns, id)
 
+      return prom(cb => {
         pull(
           pull.values([{ns, data}]),
           ppb.encode(Request),
@@ -90,7 +89,7 @@ class Exchange extends ExchangeBase {
         )
       })
     } else {
-      return cb(new Error('Not connected to peer!'))
+      throw new Error('Not connected to peer!')
     }
   }
 }
