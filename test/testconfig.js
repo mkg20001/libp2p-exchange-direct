@@ -1,6 +1,7 @@
 'use strict'
 
-const {parallel} = require('async')
+const prom = (fnc) => new Promise((resolve, reject) => fnc((err, res) => err ? reject(err) : resolve(res)))
+const wait = (i) => new Promise((resolve, reject) => setTimeout(resolve, i))
 
 module.exports = {
   opt: {
@@ -33,14 +34,11 @@ module.exports = {
       }
     }
   },
-  before: (eA, eB, eM, cb) => {
+  before: async (eA, eB, eM) => {
     // a & b dial m, then a dials b using m as relay
-    parallel([eA, eB].map(e => cb => e.swarm.dial(eM.swarm.peerInfo, cb)), err => {
-      if (err) {
-        return cb(err)
-      }
-      setTimeout(() => eB.swarm.dial(eA.swarm.peerInfo, cb), 250) // wait for circuit to find relay
-    })
+    await Promise.all([eA, eB].map((e) => prom(cb => e.swarm.dial(eM.swarm.peerInfo, cb))))
+    await wait(250)
+    await prom(cb => eB.swarm.dial(eA.swarm.peerInfo, cb))
   },
   Exchange: require('../src')
 }
